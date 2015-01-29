@@ -71,3 +71,5 @@ It should be possible to use updates to this build to update a GitLab server. Th
 5. Rerun the process from step 3 of the installation instructions.
 
 Note that while this process has been mostly tested, it has not yet been tested with DB migrations. As with any time you perform software updates, [do a backup](https://github.com/gitlabhq/gitlabhq/blob/master/doc/raketasks/backup_restore.md) first.
+
+CLONED BY YOLANDA ROBLA TO USE OWN SETTINGS

@@ -15,9 +15,9 @@ production: &base
   ## GitLab settings
   gitlab:
     ## Web server settings
-    host: localhost
-    port: 80
-    https: false
+    host: #HOST#
+    port: 80443
+    https: true
 
     # Uncomment and customize the last line to run in a non-root path
     # WARNING: This feature is no longer supported
@@ -33,10 +33,10 @@ production: &base
 
     ## Email settings
     # Email address used in the "From" field in mails sent by GitLab
-    email_from: gitlab@localhost
+    email_from: info@revise.ly
 
     # Email address of your support contact (default: same as email_from)
-    support_email: support@localhost
+    support_email: info@revise.ly
 
     ## User settings
     default_projects_limit: 10
@@ -149,8 +149,8 @@ production: &base
 
   ## Backup settings
   backup:
-    path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
-    # keep_time: 604800   # default: 0 (forever) (in seconds)
+    path: "/srv/gitlab_backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
+    keep_time: 604800   # default: 0 (forever) (in seconds)
 
   ## GitLab Shell settings
   gitlab_shell:
@@ -163,7 +163,7 @@ production: &base
     receive_pack: true
 
     # If you use non-standard ssh port you need to specify it
-    # ssh_port: 22
+    ssh_port: 48022
 
   ## Git settings
   # CAUTION!

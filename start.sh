@@ -1,8 +1,13 @@
 #!/bin/bash
 
-# upstart workaround
-dpkg-divert --local --rename --add /sbin/initctl
-ln -s /bin/true /sbin/initctl
+# check for needed env vars
+: ${DB_ADMIN_USER?"Need to set DB admin username"}
+: ${DB_ADMIN_PASS?"Need to set DB admin password"}
+: ${DB_HOST?"Need to set DB host"}
+: ${HOST?"Need to set host"}
+: ${DB_USER?"Need to set DB user"}
+: ${DB_PASS?"Need to set DB pass"}
+: ${DB_NAME?"Need to set DB name"}
 
 # start SSH
 mkdir -p /var/run/sshd
@@ -14,6 +19,10 @@ sleep 5
 
 # remove PIDs created by GitLab init script
 rm /home/git/gitlab/tmp/pids/*
+
+# change nginx and gitlab configuration
+sed -i -e "s/#HOST#/$HOST/g" /srv/gitlab/config/nginx
+sed -i -e "s/#HOST#/$HOST/g" /srv/gitlab/config/gitlab.yml
 
 # Copy over config files
 cp /srv/gitlab/config/gitlab.yml /home/git/gitlab/config/gitlab.yml
@@ -35,15 +44,14 @@ sed -i 's/^timeout .*/timeout 300/' /home/git/gitlab/config/unicorn.rb
 # Change repo path in gitlab-shell config
 sed -i -e 's/\/home\/git\/repositories/\/srv\/gitlab\/data\/repositories/g' /home/git/gitlab-shell/config.yml
 
-# Link MySQL dir to /srv/gitlab/data
-mv /var/lib/mysql /var/lib/mysql-tmp
-ln -s /srv/gitlab/data/mysql /var/lib/mysql
+# change database configuration
+sed -i -e "s/#DB_NAME#/$DB_NAME/g" /home/git/gitlab/config/database.yml
+sed -i -e "s/#DB_USER#/$DB_USER/g" /home/git/gitlab/config/database.yml
+sed -i -e "s/#DB_PASS#/$DB_PASS/g" /home/git/gitlab/config/database.yml
+sed -i -e "s/#DB_HOST#/$DB_HOST/g" /home/git/gitlab/config/database.yml
 
 # Run the firstrun script
 /srv/gitlab/firstrun.sh
-
-# start mysql
-mysqld_safe &
 
 # start gitlab
 service gitlab start
